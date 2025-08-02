@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign Language Translator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 40px 20px;
+            background-color: #f4f8fc;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #222;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #result {
+            margin-top: 30px;
+            font-size: 18px;
+            line-height: 1.6;
+            padding: 15px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        img {
+            margin-top: 15px;
+            max-height: 200px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .word-list {
+            margin-top: 25px;
+            font-size: 14px;
+            color: #555;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .word-list strong {
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <h1>Speech to Sign Language</h1>
+
+    <button onclick="startListening()" title="Try saying: angry, bye, crying, dance, deciding, driving, eating, happy, hii, jumping, laughing, learning, planning, playing, please, remembering, running, sad, singing, solving problems, sorry, thinking, walking, welcome">
+        🎙️ Speak
+    </button>
+
+    <div class="word-list">
+        Try saying: <br>
+        <strong>
+            angry, bye, crying, dance, deciding, driving, eating, happy, hii, jumping, laughing, learning,
+            planning, playing, please, remembering, running, sad, singing, solving problems, sorry, stressed
+            thinking, walking, welcome
+        </strong>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        function startListening() {
+            document.getElementById("result").innerHTML = "Listening and predicting...";
+            fetch("/listen/")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById("result").innerHTML = `
+                            <p><b>Detected:</b> ${data.spoken_text}</p>
+                            <p><b>Predicted Label:</b> ${data.predicted_label}</p>
+                            <img src="${data.gif_url}" alt="Sign GIF">
+                        `;
+                    } else {
+                        document.getElementById("result").innerHTML = "Error: " + data.error;
+                    }
+                });
+        }
+    </script>
+</body>
+</html>
